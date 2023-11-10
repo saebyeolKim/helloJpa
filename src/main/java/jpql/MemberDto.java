@@ -1,23 +1,12 @@
 package jpql;
 
-import javax.persistence.*;
-
-@Entity
-public class Member {
-    @Id @GeneratedValue
-    private Long id;
+public class MemberDto {
     private String username;
     private int age;
-    @ManyToOne
-    @JoinColumn(name = "TEAM_ID")
-    private Team team;
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
+    public MemberDto(String username, int age) {
+        this.username = username;
+        this.age = age;
     }
 
     public String getUsername() {

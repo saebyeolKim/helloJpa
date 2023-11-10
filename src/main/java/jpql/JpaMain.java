@@ -1,19 +1,9 @@
-package helloJpa;
+package jpql;
 
-import org.hibernate.Hibernate;
-
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityTransaction;
-import javax.persistence.Persistence;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
-import java.time.LocalDateTime;
+import javax.persistence.*;
 import java.util.List;
-import java.util.Set;
 
-public class Main {
+public class JpaMain {
     public static void main(String[] args) {
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("hello");
         EntityManager em = emf.createEntityManager();
@@ -22,6 +12,25 @@ public class Main {
         tx.begin();     //트랜잭션 시작
         //code
         try {
+            Member member = new Member();
+            member.setUsername("member1");
+            member.setAge(10);
+            em.persist(member);
+
+            em.flush();
+            em.clear();
+
+            List<MemberDto> result = em.createQuery("select new jpql.MemberDto(m.username, m.age) from Member m", MemberDto.class)
+                    .getResultList();
+            MemberDto memberDto = result.get(0);
+            System.out.println("memberDto.getUsername() = " + memberDto.getUsername());
+            System.out.println("memberDto.getAge() = " + memberDto.getAge());
+
+            TypedQuery<String> query2 = em.createQuery("select m.username from Member m", String.class);
+            Query query3 = em.createQuery("select m.username, m.age from Member m"); //반환타입을 하나로 받을 수 없음
+
+
+
             tx.commit();    //커밋
         } catch (Exception e) {
             tx.rollback();
